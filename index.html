@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Dashboard</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(135deg, #5ee7df, #b490ca);
+      color: #222;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .weather-app {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 32px;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .search-box {
+      display: flex;
+      gap: 12px;
+      max-width: 540px;
+      margin: 0 auto 24px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-box button {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 16px;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .search-box button:hover {
+      background: #1d4ed8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      color: #fff;
+      font-size: 22px;
+    }
+
+    .card-content {
+      background: rgba(255, 255, 255, 0.84);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 280px;
+    }
+
+    .hint,
+    .error,
+    .loading {
+      color: #444;
+    }
+
+    .current-city {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .current-time {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .current-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .current-temp {
+      font-size: 44px;
+      font-weight: bold;
+    }
+
+    .current-desc {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .current-meta {
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 240px;
+    }
+
+    .aqi-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    .aqi-main {
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .aqi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .aqi-item {
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .aqi-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .aqi-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .advice-box {
+      background: rgba(37, 99, 235, 0.08);
+      border-left: 4px solid #2563eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #333;
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+
+    .map-card {
+      grid-column: 1 / -1;
+    }
+
+    .map-note {
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    #cloudMap {
+      width: 100%;
+      height: 500px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #9ec9ff;
+    }
+
+    .leaflet-container {
+      border-radius: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .map-card {
+        grid-column: auto;
+      }
+
+      .aqi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-app">
+    <h1>天氣資訊面板</h1>
+
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="輸入城市，例如 Taipei" />
+      <button id="searchBtn">查詢</button>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>目前天氣</h2>
+        <div id="currentWeather" class="card-content">
+          <p class="hint">請輸入城市名稱後查詢</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>未來 12 小時天氣</h2>
+        <div class="card-content">
+          <div class="chart-wrap">
+            <canvas id="hourlyChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>未來 7 天天氣</h2>
+        <div class="card-content">
+          <div class="chart-wrap">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>空氣品質與建議</h2>
+        <div id="airQuality" class="card-content">
+          <p class="hint">尚無資料</p>
+        </div>
+      </section>
+
+      <section class="card map-card">
+        <h2>雲圖地圖</h2>
+        <div class="map-note">綠色陸地、藍色海洋，雲層依厚度呈現白到灰</div>
+        <div id="cloudMap"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    const OPENWEATHER_API_KEY = "bd5e378503939ddaee76f12ad7a97608";
+
+    const cityInput = document.getElementById("cityInput");
+    const searchBtn = document.getElementById("searchBtn");
+
+    const currentWeather = document.getElementById("currentWeather");
+    const airQuality = document.getElementById("airQuality");
+
+    let map;
+    let marker;
+    let cloudLayer;
+    let hourlyChartInstance = null;
+    let weeklyChartInstance = null;
+
+    function showLoading() {
+      currentWeather.innerHTML = `<p class="loading">查詢中...</p>`;
+      airQuality.innerHTML = `<p class="loading">查詢中...</p>`;
+    }
+
+    function showError(message) {
+      currentWeather.innerHTML = `<p class="error">${message}</p>`;
+      airQuality.innerHTML = `<p class="error">${message}</p>`;
+      clearCharts();
+    }
+
+    function clearCharts() {
+      if (hourlyChartInstance) {
+        hourlyChartInstance.destroy();
+        hourlyChartInstance = null;
+      }
+      if (weeklyChartInstance) {
+        weeklyChartInstance.destroy();
+        weeklyChartInstance = null;
+      }
+    }
+
+    async function fetchJSON(url) {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "API request failed");
+      }
+
+      return data;
+    }
+
+    async function getCoordinates(city) {
+      const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=${OPENWEATHER_API_KEY}`;
+      const data = await fetchJSON(url);
+
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("找不到這個城市");
+      }
+
+      return data[0];
+    }
+
+    async function getCurrentWeather(lat, lon) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=zh_tw`;
+      return await fetchJSON(url);
+    }
+
+    async function getAirPollution(lat, lon) {
+      const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`;
+      return await fetchJSON(url);
+    }
+
+    async function getForecast(lat, lon) {
+      const url =
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&current=temperature_2m,weathercode,is_day,time` +
+        `&hourly=temperature_2m,weathercode,is_day,cloudcover,time` +
+        `&daily=weathercode,temperature_2m_max,temperature_2m_min,time` +
+        `&forecast_days=8&timezone=auto`;
+
+      return await fetchJSON(url);
+    }
+
+    function formatCurrentTime(date, timezone) {
+      return new Intl.DateTimeFormat("zh-TW", {
+        timeZone: timezone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        weekday: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).format(date);
+    }
+
+    function formatHourLocal(dateText) {
+      const timePart = dateText.split("T")[1] || "00:00";
+      return `${timePart.slice(0, 2)}:00`;
+    }
+
+    function formatDayLocal(dateText) {
+      const d = new Date(`${dateText}T00:00:00`);
+      const weekNames = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${mm}/${dd} ${weekNames[d.getDay()]}`;
+    }
+
+    function weatherCodeToZh(code) {
+      const map = {
+        0: "晴朗",
+        1: "大致晴朗",
+        2: "局部多雲",
+        3: "陰天",
+        45: "霧",
+        48: "霧凇",
+        51: "毛毛雨",
+        53: "中度毛毛雨",
+        55: "強毛毛雨",
+        56: "凍毛毛雨",
+        57: "強凍毛毛雨",
+        61: "小雨",
+        63: "中雨",
+        65: "大雨",
+        66: "凍雨",
+        67: "強凍雨",
+        71: "小雪",
+        73: "中雪",
+        75: "大雪",
+        77: "雪粒",
+        80: "陣雨",
+        81: "較強陣雨",
+        82: "強烈陣雨",
+        85: "陣雪",
+        86: "強陣雪",
+        95: "雷雨",
+        96: "雷雨夾冰雹",
+        99: "強雷雨夾冰雹"
+      };
+      return map[code] || "未知天氣";
+    }
+
+    function weatherCodeToIcon(code) {
+      if (code === 0) return "☀️";
+      if ([1, 2].includes(code)) return "⛅";
+      if ([3].includes(code)) return "☁️";
+      if ([45, 48].includes(code)) return "🌫️";
+      if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "🌧️";
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return "❄️";
+      if ([95, 96, 99].includes(code)) return "⛈️";
+      return "🌤️";
+    }
+
+    function renderCurrent(cityName, country, current, timezone) {
+      const icon = current.weather[0].icon;
+      const desc = current.weather[0].description;
+      const localNow = formatCurrentTime(new Date(), timezone);
+
+      currentWeather.innerHTML = `
+        <div class="current-city">${cityName}${country ? `, ${country}` : ""}</div>
+        <div class="current-time">當地時間：${localNow}</div>
+        <div class="current-main">
+          <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="${desc}">
+          <div class="current-temp">${Math.round(current.main.temp)}°C</div>
+        </div>
+        <div class="current-desc">${desc}</div>
+        <div class="current-meta">
+          體感溫度：${Math.round(current.main.feels_like)}°C<br>
+          濕度：${current.main.humidity}%<br>
+          風速：${current.wind.speed} m/s
+        </div>
+      `;
+    }
+
+    const dayNightBackgroundPlugin = {
+      id: "dayNightBackgroundPlugin",
+      beforeDraw(chart, args, pluginOptions) {
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || !pluginOptions || !pluginOptions.isDay) return;
+
+        const x = scales.x;
+        const isDay = pluginOptions.isDay;
+
+        ctx.save();
+
+        for (let i = 0; i < isDay.length; i++) {
+          const xCenter = x.getPixelForValue(i);
+          const prev = i === 0 ? chartArea.left : (x.getPixelForValue(i - 1) + xCenter) / 2;
+          const next = i === isDay.length - 1 ? chartArea.right : (xCenter + x.getPixelForValue(i + 1)) / 2;
+
+          ctx.fillStyle = isDay[i] ? "rgba(255, 244, 200, 0.45)" : "rgba(25, 40, 75, 0.18)";
+          ctx.fillRect(prev, chartArea.top, next - prev, chartArea.bottom - chartArea.top);
+        }
+
+        ctx.restore();
+      }
+    };
+
+    const dailyIconsPlugin = {
+      id: "dailyIconsPlugin",
+      afterDatasetsDraw(chart, args, pluginOptions) {
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || !pluginOptions || !pluginOptions.icons) return;
+
+        const icons = pluginOptions.icons;
+        const x = scales.x;
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "22px Arial";
+
+        for (let i = 0; i < icons.length; i++) {
+          const px = x.getPixelForValue(i);
+          ctx.fillText(icons[i], px, chartArea.top + 14);
+        }
+
+        ctx.restore();
+      }
+    };
+
+    function renderHourlyChart(hourly, currentTime) {
+      const startIndex = hourly.time.findIndex(t => t === currentTime);
+      const idx = startIndex >= 0 ? startIndex : 0;
+
+      const times = hourly.time.slice(idx, idx + 12);
+      const temps = hourly.temperature_2m.slice(idx, idx + 12);
+      const isDay = hourly.is_day.slice(idx, idx + 12);
+      const codes = hourly.weathercode.slice(idx, idx + 12);
+
+      const labels = times.map(t => formatHourLocal(t));
+
+      const ctx = document.getElementById("hourlyChart").getContext("2d");
+      if (hourlyChartInstance) hourlyChartInstance.destroy();
+
+      hourlyChartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "溫度 (°C)",
+              data: temps,
+              tension: 0.35,
+              borderWidth: 3,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              fill: false,
+              borderColor: "#f97316",
+              backgroundColor: "#f97316"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 8,
+              right: 10,
+              bottom: 8,
+              left: 6
+            }
+          },
+          plugins: {
+            legend: {
+              display: true
+            },
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  const i = context.dataIndex;
+                  return weatherCodeToZh(codes[i]);
+                }
+              }
+            },
+            dayNightBackgroundPlugin: {
+              isDay
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: value => `${value}°`
+              }
+            },
+            x: {
+              ticks: {
+                maxRotation: 0,
+                minRotation: 0
+              }
+            }
+          }
+        },
+        plugins: [dayNightBackgroundPlugin]
+      });
+    }
+
+    function renderWeeklyChart(daily) {
+      const times = daily.time.slice(1, 8);
+      const maxTemps = daily.temperature_2m_max.slice(1, 8);
+      const minTemps = daily.temperature_2m_min.slice(1, 8);
+      const codes = daily.weathercode.slice(1, 8);
+
+      const labels = times.map(t => formatDayLocal(t));
+      const icons = codes.map(c => weatherCodeToIcon(c));
+
+      const ctx = document.getElementById("weeklyChart").getContext("2d");
+      if (weeklyChartInstance) weeklyChartInstance.destroy();
+
+      weeklyChartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "最高溫 (°C)",
+              data: maxTemps,
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 4,
+              borderColor: "#ef4444",
+              backgroundColor: "#ef4444"
+            },
+            {
+              label: "最低溫 (°C)",
+              data: minTemps,
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 4,
+              borderColor: "#3b82f6",
+              backgroundColor: "#3b82f6"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 28,
+              right: 10,
+              bottom: 8,
+              left: 6
+            }
+          },
+          plugins: {
+            legend: {
+              display: true
+            },
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  const i = context.dataIndex;
+                  return weatherCodeToZh(codes[i]);
+                }
+              }
+            },
+            dailyIconsPlugin: {
+              icons
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: value => `${value}°`
+              }
+            },
+            x: {
+              ticks: {
+                maxRotation: 0,
+                minRotation: 0
+              }
+            }
+          }
+        },
+        plugins: [dailyIconsPlugin]
+      });
+    }
+
+    function getAqiInfo(aqi) {
+      const map = {
+        1: { text: "良好", color: "#22c55e" },
+        2: { text: "普通", color: "#eab308" },
+        3: { text: "中等偏差", color: "#f97316" },
+        4: { text: "差", color: "#ef4444" },
+        5: { text: "很差", color: "#7c3aed" }
+      };
+      return map[aqi] || { text: "未知", color: "#6b7280" };
+    }
+
+    function getExerciseAdvice(aqi, visibilityMeter) {
+      const visibilityKm = visibilityMeter / 1000;
+
+      if (aqi <= 2 && visibilityKm >= 10) {
+        return "空氣品質與能見度都不錯，適合一般戶外運動，例如慢跑、散步或騎車。";
+      }
+
+      if (aqi <= 2 && visibilityKm < 10) {
+        return "空氣品質尚可，但能見度偏低，戶外活動可進行，但建議避開高速移動或車流量大的路段。";
+      }
+
+      if (aqi === 3) {
+        return "空氣品質普通偏差，敏感族群建議減少長時間戶外運動，一般民眾可進行輕度活動。";
+      }
+
+      if (aqi >= 4) {
+        return "空氣品質不佳，建議避免劇烈戶外運動，改為室內活動較合適。";
+      }
+
+      return "可依自身狀況安排活動，若有呼吸道不適，建議降低戶外運動量。";
+    }
+
+    function renderAirQuality(current, airData) {
+      const item = airData.list[0];
+      const aqi = item.main.aqi;
+      const info = getAqiInfo(aqi);
+
+      const pm25 = item.components.pm2_5 ?? "-";
+      const pm10 = item.components.pm10 ?? "-";
+      const no2 = item.components.no2 ?? "-";
+      const o3 = item.components.o3 ?? "-";
+      const visibility = current.visibility ?? 0;
+      const visibilityKm = (visibility / 1000).toFixed(1);
+      const advice = getExerciseAdvice(aqi, visibility);
+
+      airQuality.innerHTML = `
+        <div class="aqi-badge" style="background:${info.color};">
+          空氣品質：${info.text}
+        </div>
+
+        <div class="aqi-main">
+          AQI 指數：${aqi}
+        </div>
+
+        <div class="aqi-grid">
+          <div class="aqi-item">
+            <div class="aqi-label">PM2.5</div>
+            <div class="aqi-value">${Math.round(pm25)}</div>
+          </div>
+          <div class="aqi-item">
+            <div class="aqi-label">PM10</div>
+            <div class="aqi-value">${Math.round(pm10)}</div>
+          </div>
+          <div class="aqi-item">
+            <div class="aqi-label">NO₂</div>
+            <div class="aqi-value">${Math.round(no2)}</div>
+          </div>
+          <div class="aqi-item">
+            <div class="aqi-label">O₃</div>
+            <div class="aqi-value">${Math.round(o3)}</div>
+          </div>
+          <div class="aqi-item">
+            <div class="aqi-label">能見度</div>
+            <div class="aqi-value">${visibilityKm} km</div>
+          </div>
+        </div>
+
+        <div class="advice-box">
+          <strong>運動建議：</strong><br>
+          ${advice}
+        </div>
+      `;
+    }
+
+    function initMap(lat, lon, cityName) {
+      if (!map) {
+        map = L.map("cloudMap").setView([lat, lon], 6);
+
+        L.tileLayer(
+          "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
+          {
+            attribution: "&copy; Esri"
+          }
+        ).addTo(map);
+
+        map.createPane("cloudPane");
+        map.getPane("cloudPane").style.zIndex = 450;
+        map.getPane("cloudPane").style.mixBlendMode = "screen";
+        map.getPane("cloudPane").style.filter = "grayscale(1) contrast(1.9) brightness(1.15)";
+
+        cloudLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${OPENWEATHER_API_KEY}`,
+          {
+            attribution: "&copy; OpenWeatherMap",
+            pane: "cloudPane",
+            opacity: 0.82
+          }
+        ).addTo(map);
+
+        marker = L.marker([lat, lon]).addTo(map).bindPopup(cityName).openPopup();
+      } else {
+        map.setView([lat, lon], 6);
+
+        if (marker) {
+          marker.setLatLng([lat, lon]).bindPopup(cityName).openPopup();
+        }
+
+        if (cloudLayer) {
+          map.removeLayer(cloudLayer);
+        }
+
+        cloudLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${OPENWEATHER_API_KEY}`,
+          {
+            attribution: "&copy; OpenWeatherMap",
+            pane: "cloudPane",
+            opacity: 0.82
+          }
+        ).addTo(map);
+      }
+    }
+
+    async function searchWeather(city) {
+      const query = city.trim();
+
+      if (!query) {
+        showError("請先輸入城市名稱");
+        return;
+      }
+
+      showLoading();
+
+      try {
+        const location = await getCoordinates(query);
+        const lat = location.lat;
+        const lon = location.lon;
+        const name = location.name;
+        const country = location.country || "";
+
+        const [current, forecast, airData] = await Promise.all([
+          getCurrentWeather(lat, lon),
+          getForecast(lat, lon),
+          getAirPollution(lat, lon)
+        ]);
+
+        renderCurrent(name, country, current, forecast.timezone);
+        renderHourlyChart(forecast.hourly, forecast.current.time);
+        renderWeeklyChart(forecast.daily);
+        renderAirQuality(current, airData);
+        initMap(lat, lon, `${name}${country ? `, ${country}` : ""}`);
+      } catch (error) {
+        console.error(error);
+        showError(error.message || "查詢失敗，請稍後再試");
+      }
+    }
+
+    searchBtn.addEventListener("click", () => {
+      searchWeather(cityInput.value);
+    });
+
+    cityInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        searchWeather(cityInput.value);
+      }
+    });
+
+    searchWeather("Taipei");
+  </script>
+</body>
+</html>
