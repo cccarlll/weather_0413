@@ -15,33 +15,44 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg1: #5ee7df;
+      --bg2: #b490ca;
+      --card-glass: rgba(255, 255, 255, 0.18);
+      --panel: rgba(255, 255, 255, 0.88);
+      --text: #1f2937;
+      --muted: #6b7280;
+      --blue: #3b82f6;
+      --red: #ef4444;
+      --orange: #f97316;
+    }
+
     body {
       margin: 0;
       font-family: Arial, "Microsoft JhengHei", sans-serif;
-      background: linear-gradient(135deg, #5ee7df, #b490ca);
-      color: #222;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
       min-height: 100vh;
       padding: 24px;
     }
 
-    .weather-app {
-      max-width: 1320px;
+    .app {
+      max-width: 1360px;
       margin: 0 auto;
     }
 
     h1 {
+      margin: 0 0 24px;
       text-align: center;
-      margin-top: 0;
-      margin-bottom: 24px;
-      font-size: 32px;
       color: #fff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+      font-size: 34px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
     }
 
     .search-box {
       display: flex;
       gap: 12px;
-      max-width: 540px;
+      max-width: 640px;
       margin: 0 auto 24px;
     }
 
@@ -49,15 +60,15 @@
       flex: 1;
       padding: 14px 16px;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 16px;
       outline: none;
     }
 
     .search-box button {
       border: none;
-      border-radius: 12px;
-      padding: 14px 20px;
+      border-radius: 14px;
+      padding: 14px 22px;
       font-size: 16px;
       background: #2563eb;
       color: #fff;
@@ -76,23 +87,22 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.18);
+      background: var(--card-glass);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 18px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
     }
 
     .card h2 {
-      margin-top: 0;
-      margin-bottom: 14px;
+      margin: 0 0 14px;
       color: #fff;
       font-size: 22px;
     }
 
     .card-content {
-      background: rgba(255, 255, 255, 0.84);
-      border-radius: 16px;
+      background: var(--panel);
+      border-radius: 18px;
       padding: 16px;
       min-height: 280px;
     }
@@ -101,29 +111,31 @@
     .error,
     .loading {
       color: #444;
+      line-height: 1.7;
     }
 
     .current-city {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: bold;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
-    .current-time {
-      font-size: 15px;
-      color: #555;
-      margin-bottom: 12px;
+    .current-sub {
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.7;
     }
 
     .current-main {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .current-temp {
-      font-size: 44px;
+      font-size: 46px;
       font-weight: bold;
     }
 
@@ -132,15 +144,34 @@
       margin-bottom: 8px;
     }
 
-    .current-meta {
-      color: #555;
-      line-height: 1.8;
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .meta-item {
+      background: rgba(255,255,255,0.72);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .meta-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      font-size: 22px;
+      font-weight: bold;
     }
 
     .chart-wrap {
       position: relative;
       width: 100%;
-      height: 240px;
+      height: 250px;
     }
 
     .aqi-badge {
@@ -148,38 +179,14 @@
       padding: 8px 14px;
       border-radius: 999px;
       font-weight: bold;
-      margin-bottom: 14px;
       color: #fff;
+      margin-bottom: 12px;
     }
 
     .aqi-main {
       font-size: 20px;
+      font-weight: bold;
       margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    .aqi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(120px, 1fr));
-      gap: 12px;
-      margin: 14px 0;
-    }
-
-    .aqi-item {
-      background: rgba(255, 255, 255, 0.75);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .aqi-label {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 6px;
-    }
-
-    .aqi-value {
-      font-size: 22px;
-      font-weight: bold;
     }
 
     .advice-box {
@@ -187,7 +194,6 @@
       border-left: 4px solid #2563eb;
       border-radius: 10px;
       padding: 12px 14px;
-      color: #333;
       line-height: 1.7;
       margin-top: 12px;
     }
@@ -200,11 +206,12 @@
       color: #fff;
       margin-bottom: 10px;
       font-size: 14px;
+      line-height: 1.6;
     }
 
-    #cloudMap {
+    #satelliteMap {
       width: 100%;
-      height: 500px;
+      height: 520px;
       border-radius: 16px;
       overflow: hidden;
       background: #9ec9ff;
@@ -212,6 +219,18 @@
 
     .leaflet-container {
       border-radius: 16px;
+    }
+
+    .credit {
+      margin-top: 18px;
+      text-align: center;
+      color: rgba(255,255,255,0.92);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .credit a {
+      color: #fff;
     }
 
     @media (max-width: 900px) {
@@ -223,18 +242,22 @@
         grid-column: auto;
       }
 
-      .aqi-grid {
+      .meta-grid {
         grid-template-columns: 1fr;
+      }
+
+      .search-box {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <div class="weather-app">
+  <div class="app">
     <h1>天氣資訊面板</h1>
 
     <div class="search-box">
-      <input type="text" id="cityInput" placeholder="輸入城市，例如 Taipei" />
+      <input type="text" id="cityInput" placeholder="輸入城市，例如 Taipei、Tokyo、Paris" />
       <button id="searchBtn">查詢</button>
     </div>
 
@@ -272,10 +295,19 @@
       </section>
 
       <section class="card map-card">
-        <h2>雲圖地圖</h2>
-        <div class="map-note">綠色陸地、藍色海洋，雲層依厚度呈現白到灰</div>
-        <div id="cloudMap"></div>
+        <h2>衛星雲圖</h2>
+        <div class="map-note">
+          使用 NASA GIBS 衛星影像底圖。這一版不再依賴 OpenWeather API key，因此更適合直接部署在 GitHub Pages。
+        </div>
+        <div id="satelliteMap"></div>
       </section>
+    </div>
+
+    <div class="credit">
+      Weather data by
+      <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+      · Satellite imagery by
+      <a href="https://earthdata.nasa.gov/gibs" target="_blank" rel="noopener noreferrer">NASA GIBS</a>
     </div>
   </div>
 
@@ -283,23 +315,31 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    const OPENWEATHER_API_KEY = "bd5e378503939ddaee76f12ad7a97608";
-
     const cityInput = document.getElementById("cityInput");
     const searchBtn = document.getElementById("searchBtn");
-
     const currentWeather = document.getElementById("currentWeather");
     const airQuality = document.getElementById("airQuality");
 
-    let map;
-    let marker;
-    let cloudLayer;
-    let hourlyChartInstance = null;
-    let weeklyChartInstance = null;
+    let hourlyChart = null;
+    let weeklyChart = null;
+    let map = null;
+    let marker = null;
+    let satelliteLayer = null;
 
-    function showLoading() {
+    function setLoading() {
       currentWeather.innerHTML = `<p class="loading">查詢中...</p>`;
       airQuality.innerHTML = `<p class="loading">查詢中...</p>`;
+    }
+
+    function clearCharts() {
+      if (hourlyChart) {
+        hourlyChart.destroy();
+        hourlyChart = null;
+      }
+      if (weeklyChart) {
+        weeklyChart.destroy();
+        weeklyChart = null;
+      }
     }
 
     function showError(message) {
@@ -308,61 +348,61 @@
       clearCharts();
     }
 
-    function clearCharts() {
-      if (hourlyChartInstance) {
-        hourlyChartInstance.destroy();
-        hourlyChartInstance = null;
+    async function fetchJSON(url, customMessage = "API request failed") {
+      let res;
+      try {
+        res = await fetch(url);
+      } catch (err) {
+        throw new Error("無法連線到資料來源，請確認網路連線或稍後再試。");
       }
-      if (weeklyChartInstance) {
-        weeklyChartInstance.destroy();
-        weeklyChartInstance = null;
-      }
-    }
 
-    async function fetchJSON(url) {
-      const res = await fetch(url);
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        throw new Error(`資料格式錯誤：${customMessage}`);
+      }
 
       if (!res.ok) {
-        throw new Error(data.message || "API request failed");
+        throw new Error(data.reason || data.error || customMessage);
       }
-
       return data;
     }
 
-    async function getCoordinates(city) {
-      const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=${OPENWEATHER_API_KEY}`;
-      const data = await fetchJSON(url);
+    async function geocodeCity(city) {
+      const url =
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}` +
+        `&count=1&language=zh&format=json`;
 
-      if (!Array.isArray(data) || data.length === 0) {
-        throw new Error("找不到這個城市");
+      const data = await fetchJSON(url, "地點查詢失敗");
+
+      if (!data.results || !data.results.length) {
+        throw new Error("找不到這個城市，請換一個名稱試試。");
       }
-
-      return data[0];
+      return data.results[0];
     }
 
-    async function getCurrentWeather(lat, lon) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=zh_tw`;
-      return await fetchJSON(url);
-    }
-
-    async function getAirPollution(lat, lon) {
-      const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`;
-      return await fetchJSON(url);
-    }
-
-    async function getForecast(lat, lon) {
+    async function getWeather(lat, lon, timezone) {
       const url =
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-        `&current=temperature_2m,weathercode,is_day,time` +
-        `&hourly=temperature_2m,weathercode,is_day,cloudcover,time` +
-        `&daily=weathercode,temperature_2m_max,temperature_2m_min,time` +
-        `&forecast_days=8&timezone=auto`;
+        `&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,visibility,is_day` +
+        `&hourly=temperature_2m,weather_code,is_day` +
+        `&daily=weather_code,temperature_2m_max,temperature_2m_min` +
+        `&forecast_days=8&timezone=${encodeURIComponent(timezone || "auto")}`;
 
-      return await fetchJSON(url);
+      return await fetchJSON(url, "天氣資料讀取失敗");
     }
 
-    function formatCurrentTime(date, timezone) {
+    async function getAirQuality(lat, lon, timezone) {
+      const url =
+        `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
+        `&current=us_aqi,pm2_5,pm10,nitrogen_dioxide,ozone` +
+        `&timezone=${encodeURIComponent(timezone || "auto")}`;
+
+      return await fetchJSON(url, "空氣品質資料讀取失敗");
+    }
+
+    function formatLocalNow(timezone) {
       return new Intl.DateTimeFormat("zh-TW", {
         timeZone: timezone,
         year: "numeric",
@@ -372,7 +412,7 @@
         hour: "2-digit",
         minute: "2-digit",
         hour12: false
-      }).format(date);
+      }).format(new Date());
     }
 
     function formatHourLocal(dateText) {
@@ -422,148 +462,143 @@
       return map[code] || "未知天氣";
     }
 
-    function weatherCodeToIcon(code) {
+    function weatherCodeToEmoji(code) {
       if (code === 0) return "☀️";
       if ([1, 2].includes(code)) return "⛅";
-      if ([3].includes(code)) return "☁️";
+      if (code === 3) return "☁️";
       if ([45, 48].includes(code)) return "🌫️";
-      if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "🌧️";
-      if ([71, 73, 75, 77, 85, 86].includes(code)) return "❄️";
-      if ([95, 96, 99].includes(code)) return "⛈️";
+      if ([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)) return "🌧️";
+      if ([71,73,75,77,85,86].includes(code)) return "❄️";
+      if ([95,96,99].includes(code)) return "⛈️";
       return "🌤️";
     }
 
-    function renderCurrent(cityName, country, current, timezone) {
-      const icon = current.weather[0].icon;
-      const desc = current.weather[0].description;
-      const localNow = formatCurrentTime(new Date(), timezone);
+    function renderCurrent(location, weather) {
+      const c = weather.current;
+      const localNow = formatLocalNow(weather.timezone);
 
       currentWeather.innerHTML = `
-        <div class="current-city">${cityName}${country ? `, ${country}` : ""}</div>
-        <div class="current-time">當地時間：${localNow}</div>
-        <div class="current-main">
-          <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="${desc}">
-          <div class="current-temp">${Math.round(current.main.temp)}°C</div>
+        <div class="current-city">${location.name}${location.country ? `, ${location.country}` : ""}</div>
+        <div class="current-sub">
+          當地時間：${localNow}<br>
+          座標：${location.latitude.toFixed(2)}, ${location.longitude.toFixed(2)}
         </div>
-        <div class="current-desc">${desc}</div>
-        <div class="current-meta">
-          體感溫度：${Math.round(current.main.feels_like)}°C<br>
-          濕度：${current.main.humidity}%<br>
-          風速：${current.wind.speed} m/s
+
+        <div class="current-main">
+          <div style="font-size:42px;">${weatherCodeToEmoji(c.weather_code)}</div>
+          <div class="current-temp">${Math.round(c.temperature_2m)}°C</div>
+        </div>
+
+        <div class="current-desc">${weatherCodeToZh(c.weather_code)}</div>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">體感溫度</div>
+            <div class="meta-value">${Math.round(c.apparent_temperature)}°</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">濕度</div>
+            <div class="meta-value">${Math.round(c.relative_humidity_2m)}%</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">風速</div>
+            <div class="meta-value">${Math.round(c.wind_speed_10m)}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">能見度</div>
+            <div class="meta-value">${(c.visibility / 1000).toFixed(1)} km</div>
+          </div>
         </div>
       `;
     }
 
-    const dayNightBackgroundPlugin = {
-      id: "dayNightBackgroundPlugin",
-      beforeDraw(chart, args, pluginOptions) {
+    const dayNightPlugin = {
+      id: "dayNightPlugin",
+      beforeDraw(chart, args, options) {
         const { ctx, chartArea, scales } = chart;
-        if (!chartArea || !pluginOptions || !pluginOptions.isDay) return;
+        if (!chartArea || !options || !options.isDay) return;
 
         const x = scales.x;
-        const isDay = pluginOptions.isDay;
+        const isDay = options.isDay;
 
         ctx.save();
-
         for (let i = 0; i < isDay.length; i++) {
           const xCenter = x.getPixelForValue(i);
           const prev = i === 0 ? chartArea.left : (x.getPixelForValue(i - 1) + xCenter) / 2;
           const next = i === isDay.length - 1 ? chartArea.right : (xCenter + x.getPixelForValue(i + 1)) / 2;
-
-          ctx.fillStyle = isDay[i] ? "rgba(255, 244, 200, 0.45)" : "rgba(25, 40, 75, 0.18)";
+          ctx.fillStyle = isDay[i] ? "rgba(255, 244, 200, 0.42)" : "rgba(25, 40, 75, 0.18)";
           ctx.fillRect(prev, chartArea.top, next - prev, chartArea.bottom - chartArea.top);
         }
-
         ctx.restore();
       }
     };
 
-    const dailyIconsPlugin = {
-      id: "dailyIconsPlugin",
-      afterDatasetsDraw(chart, args, pluginOptions) {
+    const weekIconsPlugin = {
+      id: "weekIconsPlugin",
+      afterDatasetsDraw(chart, args, options) {
         const { ctx, chartArea, scales } = chart;
-        if (!chartArea || !pluginOptions || !pluginOptions.icons) return;
-
-        const icons = pluginOptions.icons;
-        const x = scales.x;
+        if (!chartArea || !options || !options.icons) return;
 
         ctx.save();
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.font = "22px Arial";
 
-        for (let i = 0; i < icons.length; i++) {
-          const px = x.getPixelForValue(i);
-          ctx.fillText(icons[i], px, chartArea.top + 14);
-        }
+        options.icons.forEach((icon, i) => {
+          const x = scales.x.getPixelForValue(i);
+          ctx.fillText(icon, x, chartArea.top + 14);
+        });
 
         ctx.restore();
       }
     };
 
-    function renderHourlyChart(hourly, currentTime) {
-      const startIndex = hourly.time.findIndex(t => t === currentTime);
+    function renderHourlyChart(weather) {
+      clearHourlyChartOnly();
+
+      const currentTime = weather.current.time;
+      const startIndex = weather.hourly.time.findIndex(t => t === currentTime);
       const idx = startIndex >= 0 ? startIndex : 0;
 
-      const times = hourly.time.slice(idx, idx + 12);
-      const temps = hourly.temperature_2m.slice(idx, idx + 12);
-      const isDay = hourly.is_day.slice(idx, idx + 12);
-      const codes = hourly.weathercode.slice(idx, idx + 12);
-
-      const labels = times.map(t => formatHourLocal(t));
+      const labels = weather.hourly.time.slice(idx, idx + 12).map(formatHourLocal);
+      const temps = weather.hourly.temperature_2m.slice(idx, idx + 12);
+      const isDay = weather.hourly.is_day.slice(idx, idx + 12);
+      const codes = weather.hourly.weather_code.slice(idx, idx + 12);
 
       const ctx = document.getElementById("hourlyChart").getContext("2d");
-      if (hourlyChartInstance) hourlyChartInstance.destroy();
 
-      hourlyChartInstance = new Chart(ctx, {
+      hourlyChart = new Chart(ctx, {
         type: "line",
         data: {
           labels,
-          datasets: [
-            {
-              label: "溫度 (°C)",
-              data: temps,
-              tension: 0.35,
-              borderWidth: 3,
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              fill: false,
-              borderColor: "#f97316",
-              backgroundColor: "#f97316"
-            }
-          ]
+          datasets: [{
+            label: "溫度 (°C)",
+            data: temps,
+            tension: 0.35,
+            borderWidth: 3,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            borderColor: "#f97316",
+            backgroundColor: "#f97316",
+            fill: false
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          layout: {
-            padding: {
-              top: 8,
-              right: 10,
-              bottom: 8,
-              left: 6
-            }
-          },
           plugins: {
-            legend: {
-              display: true
-            },
+            legend: { display: true },
             tooltip: {
               callbacks: {
-                afterLabel: function(context) {
-                  const i = context.dataIndex;
-                  return weatherCodeToZh(codes[i]);
-                }
+                afterLabel: (context) => weatherCodeToZh(codes[context.dataIndex])
               }
             },
-            dayNightBackgroundPlugin: {
-              isDay
-            }
+            dayNightPlugin: { isDay }
           },
           scales: {
             y: {
               ticks: {
-                callback: value => `${value}°`
+                callback: v => `${v}°`
               }
             },
             x: {
@@ -574,23 +609,22 @@
             }
           }
         },
-        plugins: [dayNightBackgroundPlugin]
+        plugins: [dayNightPlugin]
       });
     }
 
-    function renderWeeklyChart(daily) {
-      const times = daily.time.slice(1, 8);
-      const maxTemps = daily.temperature_2m_max.slice(1, 8);
-      const minTemps = daily.temperature_2m_min.slice(1, 8);
-      const codes = daily.weathercode.slice(1, 8);
+    function renderWeeklyChart(weather) {
+      clearWeeklyChartOnly();
 
-      const labels = times.map(t => formatDayLocal(t));
-      const icons = codes.map(c => weatherCodeToIcon(c));
+      const labels = weather.daily.time.slice(1, 8).map(formatDayLocal);
+      const maxTemps = weather.daily.temperature_2m_max.slice(1, 8);
+      const minTemps = weather.daily.temperature_2m_min.slice(1, 8);
+      const codes = weather.daily.weather_code.slice(1, 8);
+      const icons = codes.map(weatherCodeToEmoji);
 
       const ctx = document.getElementById("weeklyChart").getContext("2d");
-      if (weeklyChartInstance) weeklyChartInstance.destroy();
 
-      weeklyChartInstance = new Chart(ctx, {
+      weeklyChart = new Chart(ctx, {
         type: "line",
         data: {
           labels,
@@ -619,33 +653,21 @@
           responsive: true,
           maintainAspectRatio: false,
           layout: {
-            padding: {
-              top: 28,
-              right: 10,
-              bottom: 8,
-              left: 6
-            }
+            padding: { top: 28 }
           },
           plugins: {
-            legend: {
-              display: true
-            },
+            legend: { display: true },
             tooltip: {
               callbacks: {
-                afterLabel: function(context) {
-                  const i = context.dataIndex;
-                  return weatherCodeToZh(codes[i]);
-                }
+                afterLabel: (context) => weatherCodeToZh(codes[context.dataIndex])
               }
             },
-            dailyIconsPlugin: {
-              icons
-            }
+            weekIconsPlugin: { icons }
           },
           scales: {
             y: {
               ticks: {
-                callback: value => `${value}°`
+                callback: v => `${v}°`
               }
             },
             x: {
@@ -656,85 +678,78 @@
             }
           }
         },
-        plugins: [dailyIconsPlugin]
+        plugins: [weekIconsPlugin]
       });
     }
 
+    function clearHourlyChartOnly() {
+      if (hourlyChart) {
+        hourlyChart.destroy();
+        hourlyChart = null;
+      }
+    }
+
+    function clearWeeklyChartOnly() {
+      if (weeklyChart) {
+        weeklyChart.destroy();
+        weeklyChart = null;
+      }
+    }
+
     function getAqiInfo(aqi) {
-      const map = {
-        1: { text: "良好", color: "#22c55e" },
-        2: { text: "普通", color: "#eab308" },
-        3: { text: "中等偏差", color: "#f97316" },
-        4: { text: "差", color: "#ef4444" },
-        5: { text: "很差", color: "#7c3aed" }
-      };
-      return map[aqi] || { text: "未知", color: "#6b7280" };
+      if (aqi <= 50) return { text: "良好", color: "#22c55e" };
+      if (aqi <= 100) return { text: "普通", color: "#eab308" };
+      if (aqi <= 150) return { text: "對敏感族群不佳", color: "#f97316" };
+      if (aqi <= 200) return { text: "不健康", color: "#ef4444" };
+      if (aqi <= 300) return { text: "非常不健康", color: "#7c3aed" };
+      return { text: "危險", color: "#7f1d1d" };
     }
 
-    function getExerciseAdvice(aqi, visibilityMeter) {
-      const visibilityKm = visibilityMeter / 1000;
-
-      if (aqi <= 2 && visibilityKm >= 10) {
-        return "空氣品質與能見度都不錯，適合一般戶外運動，例如慢跑、散步或騎車。";
+    function getExerciseAdvice(aqi, visibilityKm) {
+      if (aqi <= 50 && visibilityKm >= 10) {
+        return "空氣與能見度都不錯，適合一般戶外運動。";
       }
-
-      if (aqi <= 2 && visibilityKm < 10) {
-        return "空氣品質尚可，但能見度偏低，戶外活動可進行，但建議避開高速移動或車流量大的路段。";
+      if (aqi <= 100 && visibilityKm >= 8) {
+        return "可進行一般戶外活動，但長時間高強度運動可適度減量。";
       }
-
-      if (aqi === 3) {
-        return "空氣品質普通偏差，敏感族群建議減少長時間戶外運動，一般民眾可進行輕度活動。";
+      if (aqi <= 150) {
+        return "敏感族群建議減少戶外運動，一般民眾可做輕度活動。";
       }
-
-      if (aqi >= 4) {
-        return "空氣品質不佳，建議避免劇烈戶外運動，改為室內活動較合適。";
-      }
-
-      return "可依自身狀況安排活動，若有呼吸道不適，建議降低戶外運動量。";
+      return "建議避免劇烈戶外運動，改為室內活動較合適。";
     }
 
-    function renderAirQuality(current, airData) {
-      const item = airData.list[0];
-      const aqi = item.main.aqi;
+    function renderAirQuality(weather, air) {
+      const c = air.current;
+      const aqi = Math.round(c.us_aqi ?? 0);
       const info = getAqiInfo(aqi);
-
-      const pm25 = item.components.pm2_5 ?? "-";
-      const pm10 = item.components.pm10 ?? "-";
-      const no2 = item.components.no2 ?? "-";
-      const o3 = item.components.o3 ?? "-";
-      const visibility = current.visibility ?? 0;
-      const visibilityKm = (visibility / 1000).toFixed(1);
-      const advice = getExerciseAdvice(aqi, visibility);
+      const visibilityKm = (weather.current.visibility / 1000).toFixed(1);
+      const advice = getExerciseAdvice(aqi, Number(visibilityKm));
 
       airQuality.innerHTML = `
-        <div class="aqi-badge" style="background:${info.color};">
-          空氣品質：${info.text}
-        </div>
+        <div class="aqi-badge" style="background:${info.color};">空氣品質：${info.text}</div>
 
-        <div class="aqi-main">
-          AQI 指數：${aqi}
-        </div>
+        <div class="aqi-main">AQI：${aqi}</div>
 
-        <div class="aqi-grid">
-          <div class="aqi-item">
-            <div class="aqi-label">PM2.5</div>
-            <div class="aqi-value">${Math.round(pm25)}</div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">PM2.5</div>
+            <div class="meta-value">${Math.round(c.pm2_5 ?? 0)}</div>
           </div>
-          <div class="aqi-item">
-            <div class="aqi-label">PM10</div>
-            <div class="aqi-value">${Math.round(pm10)}</div>
+          <div class="meta-item">
+            <div class="meta-label">PM10</div>
+            <div class="meta-value">${Math.round(c.pm10 ?? 0)}</div>
           </div>
-          <div class="aqi-item">
-            <div class="aqi-label">NO₂</div>
-            <div class="aqi-value">${Math.round(no2)}</div>
+          <div class="meta-item">
+            <div class="meta-label">NO₂</div>
+            <div class="meta-value">${Math.round(c.nitrogen_dioxide ?? 0)}</div>
           </div>
-          <div class="aqi-item">
-            <div class="aqi-label">O₃</div>
-            <div class="aqi-value">${Math.round(o3)}</div>
+          <div class="meta-item">
+            <div class="meta-label">O₃</div>
+            <div class="meta-value">${Math.round(c.ozone ?? 0)}</div>
           </div>
-          <div class="aqi-item">
-            <div class="aqi-label">能見度</div>
-            <div class="aqi-value">${visibilityKm} km</div>
+          <div class="meta-item">
+            <div class="meta-label">能見度</div>
+            <div class="meta-value">${visibilityKm} km</div>
           </div>
         </div>
 
@@ -745,85 +760,80 @@
       `;
     }
 
-    function initMap(lat, lon, cityName) {
+    function getGibsDate() {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() - 1);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function renderSatelliteMap(lat, lon, cityName) {
+      const gibsDate = getGibsDate();
+      const gibsUrl =
+        `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/` +
+        `MODIS_Terra_CorrectedReflectance_TrueColor/default/${gibsDate}/` +
+        `GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`;
+
       if (!map) {
-        map = L.map("cloudMap").setView([lat, lon], 6);
+        map = L.map("satelliteMap", {
+          zoomControl: true
+        }).setView([lat, lon], 5);
 
-        L.tileLayer(
-          "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
-          {
-            attribution: "&copy; Esri"
-          }
-        ).addTo(map);
-
-        map.createPane("cloudPane");
-        map.getPane("cloudPane").style.zIndex = 450;
-        map.getPane("cloudPane").style.mixBlendMode = "screen";
-        map.getPane("cloudPane").style.filter = "grayscale(1) contrast(1.9) brightness(1.15)";
-
-        cloudLayer = L.tileLayer(
-          `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${OPENWEATHER_API_KEY}`,
-          {
-            attribution: "&copy; OpenWeatherMap",
-            pane: "cloudPane",
-            opacity: 0.82
-          }
-        ).addTo(map);
+        satelliteLayer = L.tileLayer(gibsUrl, {
+          attribution: "&copy; NASA GIBS",
+          maxZoom: 9,
+          tileSize: 256,
+          noWrap: true
+        }).addTo(map);
 
         marker = L.marker([lat, lon]).addTo(map).bindPopup(cityName).openPopup();
       } else {
-        map.setView([lat, lon], 6);
+        map.setView([lat, lon], 5);
 
         if (marker) {
           marker.setLatLng([lat, lon]).bindPopup(cityName).openPopup();
         }
 
-        if (cloudLayer) {
-          map.removeLayer(cloudLayer);
+        if (satelliteLayer) {
+          map.removeLayer(satelliteLayer);
         }
 
-        cloudLayer = L.tileLayer(
-          `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${OPENWEATHER_API_KEY}`,
-          {
-            attribution: "&copy; OpenWeatherMap",
-            pane: "cloudPane",
-            opacity: 0.82
-          }
-        ).addTo(map);
+        satelliteLayer = L.tileLayer(gibsUrl, {
+          attribution: "&copy; NASA GIBS",
+          maxZoom: 9,
+          tileSize: 256,
+          noWrap: true
+        }).addTo(map);
       }
     }
 
     async function searchWeather(city) {
       const query = city.trim();
-
       if (!query) {
-        showError("請先輸入城市名稱");
+        showError("請先輸入城市名稱。");
         return;
       }
 
-      showLoading();
+      setLoading();
 
       try {
-        const location = await getCoordinates(query);
-        const lat = location.lat;
-        const lon = location.lon;
-        const name = location.name;
-        const country = location.country || "";
+        const location = await geocodeCity(query);
+        const lat = location.latitude;
+        const lon = location.longitude;
+        const timezone = location.timezone || "auto";
 
-        const [current, forecast, airData] = await Promise.all([
-          getCurrentWeather(lat, lon),
-          getForecast(lat, lon),
-          getAirPollution(lat, lon)
+        const [weather, air] = await Promise.all([
+          getWeather(lat, lon, timezone),
+          getAirQuality(lat, lon, timezone)
         ]);
 
-        renderCurrent(name, country, current, forecast.timezone);
-        renderHourlyChart(forecast.hourly, forecast.current.time);
-        renderWeeklyChart(forecast.daily);
-        renderAirQuality(current, airData);
-        initMap(lat, lon, `${name}${country ? `, ${country}` : ""}`);
-      } catch (error) {
-        console.error(error);
-        showError(error.message || "查詢失敗，請稍後再試");
+        renderCurrent(location, weather);
+        renderHourlyChart(weather);
+        renderWeeklyChart(weather);
+        renderAirQuality(weather, air);
+        renderSatelliteMap(lat, lon, `${location.name}${location.country ? `, ${location.country}` : ""}`);
+      } catch (err) {
+        console.error(err);
+        showError(err.message || "資料讀取失敗。");
       }
     }
 
@@ -831,7 +841,7 @@
       searchWeather(cityInput.value);
     });
 
-    cityInput.addEventListener("keydown", e => {
+    cityInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         searchWeather(cityInput.value);
       }
